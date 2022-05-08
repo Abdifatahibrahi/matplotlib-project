@@ -1,7 +1,9 @@
+import csv
 import numpy as np
 from cProfile import label
 from turtle import color
 from matplotlib import pyplot as plt
+from collections import Counter
 
 
 # print(plt.style.available)
@@ -9,39 +11,42 @@ from matplotlib import pyplot as plt
 plt.style.use('ggplot')
 
 
-ages_x = [25, 26, 27, 28, 29, 30, 31, 32, 33, 34]
+with open('data.csv') as csv_file:
+    csv_reader = csv.DictReader(csv_file)
 
-x_indexes = np.arange(len(ages_x))
-width = 0.25
+    language_counter = Counter()
+    
+    for row in csv_reader:
+        language_counter.update(row['LanguagesWorkedWith'].split(';'))
 
-dev_y = [38496, 42000, 46752, 49320, 53200, 56000, 62316, 64928, 68748, 73752]
+languages = []
+popularity = []
 
-# plt.plot(ages_x, dev_y, color='k', linestyle='--', marker='.', label='All Devs')
-plt.bar(x_indexes - width, dev_y, width=width, color='k', label='All Devs')
+for item in language_counter.most_common(15):
+    languages.append(item[0])
+    popularity.append(item[1])
 
+# print(tuple(zip(languages, popularity)))
 
-py_dev_y = [45372, 48876, 53850, 57287, 63016, 65998, 70003, 70000, 71496, 75370]
+languages.reverse()
+popularity.reverse()
 
-plt.bar(x_indexes, py_dev_y, width=width, label='Python')
-
-
-js_dev_y = [37810, 43515, 46823, 49293, 53437, 56373, 62375, 66674, 68745, 68746]
-
-
-plt.bar(x_indexes + width, js_dev_y, width=width, label='Javascript')
+plt.barh(languages, popularity)
 
 
-plt.xlabel('Ages')
-plt.ylabel('Median Salary(USD)')
+plt.ylabel('Programming languages')
+plt.xlabel('Number of people who use')
 
-plt.title('Median Salary (USD) by Age')
+plt.title('Most popular languages')
 
 plt.legend()
+
+# plt.xticks(ticks=x_indexes, labels=ages_x)
 
 # plt.grid(True)
 plt.tight_layout()
 
-plt.savefig('plot.png')
+# plt.savefig('plot.png')
 
 plt.show()
 
@@ -56,3 +61,4 @@ plt.show()
 # 'seaborn-notebook', 'seaborn-paper', 'seaborn-pastel', 
 # 'seaborn-poster', 'seaborn-talk', 'seaborn-ticks', 'seaborn-white', 
 # 'seaborn-whitegrid', 'tableau-colorblind10']
+
