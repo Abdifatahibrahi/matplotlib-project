@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+import pandas as pd
 from cProfile import label
 from turtle import color
 from matplotlib import pyplot as plt
@@ -11,13 +12,14 @@ from collections import Counter
 plt.style.use('ggplot')
 
 
-with open('data.csv') as csv_file:
-    csv_reader = csv.DictReader(csv_file)
+data = pd.read_csv('data.csv')
+ids = data['Responder_id']
+lang_responses = data['LanguagesWorkedWith']
 
-    language_counter = Counter()
+language_counter = Counter()
     
-    for row in csv_reader:
-        language_counter.update(row['LanguagesWorkedWith'].split(';'))
+for response in lang_responses:
+    language_counter.update(response.split(';'))
 
 languages = []
 popularity = []
